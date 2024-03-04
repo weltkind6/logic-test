@@ -1,24 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import AppRoutes from "./Routes/AppRoutes";
+import Example from "./components/RadioGroup/RadioGroup";
+import GreetingPage from "./pages/Greeting/GreetingPage";
+import { Route, Routes } from "react-router-dom";
+import FinishPage from "./pages/Finish/FinishPage";
+import Results from "./pages/Results/Results";
+import './App.css'
+
+
 
 function App() {
+ 
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Routes>
+        <Route path="/" element={<GreetingPage />} />
+        <Route path="/main" element={<Example />} />
+        <Route path="/finish" element={<FinishPage />} />
+        <Route path="/results" element={<Results />} />
+      </Routes>
+    
     </div>
   );
 }
