@@ -4,14 +4,25 @@ import { data } from "../../store/data";
 import { Button } from 'semantic-ui-react'
 import { useNavigate } from "react-router-dom";
 
-export default function Example() {
+interface ExampleProps {
+  callback?: (data: number) => void;
+}
+
+export default function Example({callback}: ExampleProps) {
+  const navigate = useNavigate();
   const [questionsData, setQuestionsData] = useState(data);
   const [selected, setSelected] = useState(data[0]);
-  const navigate = useNavigate();
+  const [correctQuestionIndex, setCorrectQuestionIndex] = useState(0);
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
+  const [totalCorrectAnswers, setTotalCorrectAnswers] = useState(0);
+
+  if (callback) {
+    callback(totalCorrectAnswers);
+  }
+
 
   let [index, setIndex] = useState(0);
   let [question, setQuestion] = useState(data[index]);
-  console.log('questionsData', questionsData.length);
 
   useEffect(() => {
     if (index === 3) {
@@ -19,14 +30,19 @@ export default function Example() {
     }
   }, [index]);
 
-
-  console.log('index', index);
-
   const nextQuestionHandler = () => {
     setIndex((prev) => prev + 1);
     setQuestion(data[index + 1]);
-   
+    if(selectedQuestionIndex === correctQuestionIndex) {
+      setTotalCorrectAnswers(prev => prev + 1)
+    }
+
   };
+
+  const checkCorrectAnswerHandler = (index: number, correctIndex: number) => {
+    setCorrectQuestionIndex(correctIndex);
+    setSelectedQuestionIndex(index);
+  }
 
   return (
     <div className="w-full px-4 py-16">
@@ -38,6 +54,7 @@ export default function Example() {
           <div className="space-y-2">
             {question?.variants.map((el, index) => (
               <RadioGroup.Option
+                onClick={() => checkCorrectAnswerHandler(index, question?.correctIndex)}
                 key={index}
                 value={el}
                 className={({ active, checked }) =>
