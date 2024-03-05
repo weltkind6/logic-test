@@ -12,18 +12,17 @@ interface ExampleProps {
 
 export default function Example({ callback, isResetScore }: ExampleProps) {
   const navigate = useNavigate();
-  const [questionsData, setQuestionsData] = useState(data);
+  let [index, setIndex] = useState(0);
+  let [question, setQuestion] = useState(data[index]);
   const [selected, setSelected] = useState(data[0]);
   const [correctQuestionIndex, setCorrectQuestionIndex] = useState(0);
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
   const [totalCorrectAnswers, setTotalCorrectAnswers] = useState(0);
+  const [isAnswerSelected, setIsAnswerSelected] = useState(false);
 
   if (callback) {
     callback(totalCorrectAnswers);
   }
-
-  let [index, setIndex] = useState(0);
-  let [question, setQuestion] = useState(data[index]);
 
   useEffect(() => {
     if (index === 3) {
@@ -43,11 +42,13 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
     if (selectedQuestionIndex === correctQuestionIndex) {
       setTotalCorrectAnswers((prev) => prev + 1);
     }
+    setIsAnswerSelected(false);
   };
 
   const checkCorrectAnswerHandler = (index: number, correctIndex: number) => {
     setCorrectQuestionIndex(correctIndex);
     setSelectedQuestionIndex(index);
+    setIsAnswerSelected(true);
   };
 
   return (
@@ -118,6 +119,7 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
           content="Дальше"
           icon="right arrow"
           labelPosition="right"
+          disabled={!isAnswerSelected}
         />
       </div>
     </div>

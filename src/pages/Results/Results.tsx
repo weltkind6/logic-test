@@ -11,7 +11,6 @@ interface ResultsProps {
 
 export default function Results({correctAnswers, resetAnswers}: ResultsProps) {
   const [isResetAnswers, setIsResetAnswers] = useState(false);
-  console.log(isResetAnswers)
 
   if (resetAnswers) {
     resetAnswers(isResetAnswers)
@@ -22,9 +21,11 @@ export default function Results({correctAnswers, resetAnswers}: ResultsProps) {
     setIsResetAnswers(prevState => !prevState);
   };
 
+  const questionWord = correctAnswers === 1 ? 'вопрос' : 'вопросов';
+
   return (
     <div className='resultWrapper'>
-         Вы ответили правильно на  {correctAnswers} вопросов из 10.
+         <div>Вы ответили правильно на  {correctAnswers} {questionWord} из 10.</div>
         <Link to="/main">
         <Button
         onClick={resetHandler} 

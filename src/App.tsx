@@ -10,8 +10,6 @@ import { useState } from "react";
 function App() {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [isResetScore, setIsResetScore] = useState(Boolean);
-  console.log(isResetScore)
-
 
   const hadleQuestionCallBack = (data: any) => {
     setCorrectAnswers(data);
