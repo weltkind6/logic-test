@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+.finishWrapper {
+    display: grid;
+    place-items: center;
+    padding-top: 150px;
+    
+}
+
+.finishBtn {
+    margin-top: 100px !important;
+}
+
+.finishWrapper > h2 {
+    font-family: "Permanent Marker", cursive !important;
+    font-weight: 400;
+    font-style: normal;
+}

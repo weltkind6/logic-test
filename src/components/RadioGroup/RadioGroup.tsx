@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { data } from "../../store/data";
-import { Button } from 'semantic-ui-react'
+import { Button } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
+import "./styles.css";
 
 interface ExampleProps {
   callback?: (data: number) => void;
+  isResetScore?: boolean;
 }
 
-export default function Example({callback}: ExampleProps) {
+export default function Example({ callback, isResetScore }: ExampleProps) {
   const navigate = useNavigate();
   const [questionsData, setQuestionsData] = useState(data);
   const [selected, setSelected] = useState(data[0]);
@@ -20,41 +22,47 @@ export default function Example({callback}: ExampleProps) {
     callback(totalCorrectAnswers);
   }
 
-
   let [index, setIndex] = useState(0);
   let [question, setQuestion] = useState(data[index]);
 
   useEffect(() => {
     if (index === 3) {
-      navigate('/finish');
+      navigate("/finish");
     }
   }, [index]);
+
+  useEffect(() => {
+    if(isResetScore) {
+      setTotalCorrectAnswers(0)
+    }
+  }, [isResetScore]);
 
   const nextQuestionHandler = () => {
     setIndex((prev) => prev + 1);
     setQuestion(data[index + 1]);
-    if(selectedQuestionIndex === correctQuestionIndex) {
-      setTotalCorrectAnswers(prev => prev + 1)
+    if (selectedQuestionIndex === correctQuestionIndex) {
+      setTotalCorrectAnswers((prev) => prev + 1);
     }
-
   };
 
   const checkCorrectAnswerHandler = (index: number, correctIndex: number) => {
     setCorrectQuestionIndex(correctIndex);
     setSelectedQuestionIndex(index);
-  }
+  };
 
   return (
-    <div className="w-full px-4 py-16">
-      <h2>Вопрос #{question?.id}</h2>
-      <h3>{question?.question}</h3>
+    <div className="w-full px-4 py-16 block">
+      <h2 style={{fontStyle: 'italic'}}>Вопрос #{question?.id}</h2>
+      <h3 className="question">{question?.question}</h3>
       <div className="mx-auto w-full max-w-md">
         <RadioGroup value={selected} onChange={setSelected}>
           <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
           <div className="space-y-2">
             {question?.variants.map((el, index) => (
               <RadioGroup.Option
-                onClick={() => checkCorrectAnswerHandler(index, question?.correctIndex)}
+                onClick={() =>
+                  checkCorrectAnswerHandler(index, question?.correctIndex)
+                }
                 key={index}
                 value={el}
                 className={({ active, checked }) =>
@@ -78,7 +86,7 @@ export default function Example({callback}: ExampleProps) {
                               checked ? "text-white" : "text-gray-900"
                             }`}
                           >
-                            {`Вариант ${index + 1}`}
+                            <span style={{fontWeight: '600'}}>{`Вариант ${index + 1}`}</span>
                           </RadioGroup.Label>
                           <RadioGroup.Description
                             as="span"
@@ -86,7 +94,7 @@ export default function Example({callback}: ExampleProps) {
                               checked ? "text-sky-100" : "text-gray-500"
                             }`}
                           >
-                            <span>{el}</span>{" "}
+                            <span style={{fontSize: '18px'}}>{el}</span>{" "}
                           </RadioGroup.Description>
                         </div>
                       </div>
@@ -102,9 +110,15 @@ export default function Example({callback}: ExampleProps) {
             ))}
           </div>
         </RadioGroup>
-        <Button onClick={nextQuestionHandler} primary>
-          Дальше
-        </Button>
+      </div>
+      <div>
+        <Button
+          onClick={nextQuestionHandler}
+          className="questionBtn"
+          content="Дальше"
+          icon="right arrow"
+          labelPosition="right"
+        />
       </div>
     </div>
   );
