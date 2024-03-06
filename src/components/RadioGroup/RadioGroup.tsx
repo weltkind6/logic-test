@@ -11,6 +11,7 @@ interface ExampleProps {
 }
 
 export default function Example({ callback, isResetScore }: ExampleProps) {
+  console.log(data.length)
   const navigate = useNavigate();
   let [index, setIndex] = useState(0);
   let [question, setQuestion] = useState(data[index]);
@@ -25,7 +26,7 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
   }
 
   useEffect(() => {
-    if (index === 3) {
+    if (index === data.length) {
       navigate("/finish");
     }
   }, [index]);
