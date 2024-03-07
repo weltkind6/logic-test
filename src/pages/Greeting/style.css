@@ -23,3 +23,7 @@
 .greetingWrapper > h1 {
     font-weight: 800;
 }
+
+.greetingWrapper > p {
+    text-align: center;
+}
