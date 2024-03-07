@@ -7,10 +7,11 @@ import "./styles.css";
 
 interface ExampleProps {
   callback?: (data: number) => void;
+  getUserAnsw?: (data: number[]) => void;
   isResetScore?: boolean;
 }
 
-export default function Example({ callback, isResetScore }: ExampleProps) {
+export default function Example({ callback, isResetScore, getUserAnsw }: ExampleProps) {
   const navigate = useNavigate();
   let [index, setIndex] = useState(0);
   let [question, setQuestion] = useState(data[index]);
@@ -19,9 +20,11 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
   const [totalCorrectAnswers, setTotalCorrectAnswers] = useState(0);
   const [isAnswerSelected, setIsAnswerSelected] = useState(false);
-  const [counter, setCounter] = useState(10);
-  console.log('totalCorrectAnswers', totalCorrectAnswers)
-  
+  const [counter, setCounter] = useState(30);
+  const [selectedQuestionIndices, setSelectedQuestionIndices] = useState<
+    number[]
+  >([]);
+
 
   useEffect(() => {
     if (counter === 0) {
@@ -35,8 +38,12 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
   }, [counter]);
 
   if (callback) {
-    callback(totalCorrectAnswers);
-  }
+    callback(totalCorrectAnswers)
+  };
+
+  if(getUserAnsw) {
+    getUserAnsw(selectedQuestionIndices)
+  };
 
   useEffect(() => {
     if (index === data.length) {
@@ -45,40 +52,47 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
   }, [index]);
 
   useEffect(() => {
-    if(isResetScore) {
-      setTotalCorrectAnswers(0)
+    if (isResetScore) {
+      setTotalCorrectAnswers(0);
     }
   }, [isResetScore]);
 
   const nextQuestionHandler = () => {
     setIndex((prev) => prev + 1);
     setQuestion(data[index + 1]);
-    if (counter  !== 0 && selectedQuestionIndex === correctQuestionIndex) {
+    if (counter !== 0 && selectedQuestionIndex === correctQuestionIndex) {
       setTotalCorrectAnswers((prev) => prev + 1);
     }
+   
     setIsAnswerSelected(false);
-    setCounter(10);
+    setCounter(30);
   };
 
   const checkCorrectAnswerHandler = (index: number, correctIndex: number) => {
     setCorrectQuestionIndex(correctIndex);
     setSelectedQuestionIndex(index);
     setIsAnswerSelected(true);
+ 
+    setSelectedQuestionIndices((prev) => [...prev, index]);
   };
 
   return (
     <div className="w-full px-4 py-16 block">
-      <h2 style={{fontStyle: 'italic'}}>Вопрос #{question?.id}</h2>
+      <h2 style={{ fontStyle: "italic" }}>Вопрос #{question?.id}</h2>
       <h3 className="question">{question?.question}</h3>
       <div className="mx-auto w-full max-w-md">
         <RadioGroup value={selected} onChange={setSelected}>
           <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
           <div className="space-y-2">
             <div>
-              {!counter ? 
-              <span>Вы получили <strong>0</strong> баллов 😥</span> 
-              : <span>Оставшееся время: {counter}</span>}
-              </div>
+              {!counter ? (
+                <span>
+                  Вы получили <strong>0</strong> баллов 😥
+                </span>
+              ) : (
+                <span>Оставшееся время: {counter}</span>
+              )}
+            </div>
             {question?.variants.map((el, index) => (
               <RadioGroup.Option
                 onClick={() =>
@@ -107,7 +121,9 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
                               checked ? "text-white" : "text-gray-900"
                             }`}
                           >
-                            <span style={{fontWeight: '600'}}>{`Вариант ${index + 1}`}</span>
+                            <span style={{ fontWeight: "600" }}>{`Вариант ${
+                              index + 1
+                            }`}</span>
                           </RadioGroup.Label>
                           <RadioGroup.Description
                             as="span"
@@ -115,7 +131,7 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
                               checked ? "text-sky-100" : "text-gray-500"
                             }`}
                           >
-                            <span style={{fontSize: '18px'}}>{el}</span>{" "}
+                            <span style={{ fontSize: "18px" }}>{el}</span>{" "}
                           </RadioGroup.Description>
                         </div>
                       </div>

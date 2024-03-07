@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TimerContext from "../../context/TimerContext/TimerContext";
 
 export default function Timer() {
-  const [counter, setCounter] = useState(10);
+  const [counter, setCounter] = useState(30);
 
   useEffect(() => {
     if (counter === 0) {

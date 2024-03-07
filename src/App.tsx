@@ -6,10 +6,12 @@ import Results from "./pages/Results/Results";
 import { useState } from "react";
 import Timer from "./components/Timer/Timer";
 import "./App.css";
+import { data } from "./store/data";
 
 function App() {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [isResetScore, setIsResetScore] = useState(Boolean);
+  const [selectedQuestionIndices, setSelectedQuestionIndices] = useState<number[]>([]);
 
   const hadleQuestionCallBack = (data: any) => {
     setCorrectAnswers(data);
@@ -17,7 +19,12 @@ function App() {
 
   const handleResetCounter = (data: boolean) => {
     setIsResetScore(data);
+   
   }
+
+  const getUserAnswersIndecec = (data: number[]) => {
+    setSelectedQuestionIndices(data)
+  };
 
   return (
     <div className="App">
@@ -26,10 +33,21 @@ function App() {
         <Route path="/" element={<GreetingPage />} />
         <Route
           path="/main"
-          element={<Example callback={hadleQuestionCallBack} isResetScore={isResetScore}/>}
+          element={
+          <Example 
+          callback={hadleQuestionCallBack} 
+          getUserAnsw={getUserAnswersIndecec}
+          isResetScore={isResetScore}
+          />}
         />
         <Route path="/finish" element={<FinishPage />} />
-        <Route path="/results" element={<Results correctAnswers={correctAnswers} resetAnswers={handleResetCounter}/>} />
+        <Route path="/results" element={
+        <Results 
+        correctAnswers={correctAnswers} 
+        resetAnswers={handleResetCounter}
+        selectedQuestionIndices={selectedQuestionIndices}
+        />} 
+        />
       </Routes>
     </div>
   );
