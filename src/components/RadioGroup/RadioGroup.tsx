@@ -4,7 +4,6 @@ import { data } from "../../store/data";
 import { Button } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
-import TimerContext from "../../context/TimerContext/TimerContext";
 
 interface ExampleProps {
   callback?: (data: number) => void;
