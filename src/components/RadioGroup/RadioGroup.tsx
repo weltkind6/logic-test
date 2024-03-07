@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { data } from "../../store/data";
 import { Button } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
+import TimerContext from "../../context/TimerContext/TimerContext";
 
 interface ExampleProps {
   callback?: (data: number) => void;
@@ -11,7 +12,6 @@ interface ExampleProps {
 }
 
 export default function Example({ callback, isResetScore }: ExampleProps) {
-  console.log(data.length)
   const navigate = useNavigate();
   let [index, setIndex] = useState(0);
   let [question, setQuestion] = useState(data[index]);
@@ -20,6 +20,20 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
   const [totalCorrectAnswers, setTotalCorrectAnswers] = useState(0);
   const [isAnswerSelected, setIsAnswerSelected] = useState(false);
+  const [counter, setCounter] = useState(10);
+  console.log('totalCorrectAnswers', totalCorrectAnswers)
+  
+
+  useEffect(() => {
+    if (counter === 0) {
+      return;
+    }
+    const interval = setInterval(() => {
+      counter > 0 && setCounter((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [counter]);
 
   if (callback) {
     callback(totalCorrectAnswers);
@@ -40,10 +54,11 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
   const nextQuestionHandler = () => {
     setIndex((prev) => prev + 1);
     setQuestion(data[index + 1]);
-    if (selectedQuestionIndex === correctQuestionIndex) {
+    if (counter  !== 0 && selectedQuestionIndex === correctQuestionIndex) {
       setTotalCorrectAnswers((prev) => prev + 1);
     }
     setIsAnswerSelected(false);
+    setCounter(10);
   };
 
   const checkCorrectAnswerHandler = (index: number, correctIndex: number) => {
@@ -60,6 +75,11 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
         <RadioGroup value={selected} onChange={setSelected}>
           <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
           <div className="space-y-2">
+            <div>
+              {!counter ? 
+              <span>Вы получили <strong>0</strong> баллов 😥</span> 
+              : <span>Оставшееся время: {counter}</span>}
+              </div>
             {question?.variants.map((el, index) => (
               <RadioGroup.Option
                 onClick={() =>
@@ -120,7 +140,7 @@ export default function Example({ callback, isResetScore }: ExampleProps) {
           content="Дальше"
           icon="right arrow"
           labelPosition="right"
-          disabled={!isAnswerSelected}
+          disabled={!counter ? false : !isAnswerSelected}
         />
       </div>
     </div>
